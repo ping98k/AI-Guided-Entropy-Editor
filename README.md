@@ -12,33 +12,39 @@ selecting alternative tokens at high-entropy (uncertain) branching points.
 6. Process repeats until Claude calls stop(is_pass=True)
 
 ## Key features:
-- Real-time text generation with logprobs from vLLM server  
+- Real-time text generation with logprobs from vLLM server
 - Shannon entropy calculation to measure token uncertainty
 - Claude agent with 2 tools: pick() for token selection, stop() to end
 - Configurable thresholds for filtering alternatives by probability and count
 - Useful for exploring guided model behavior and steering generation
 
-
 ## Installation
 
 1. Install dependencies:
+   ```bash
    pip install -r requirements.txt
+   ```
 
-2. Set up environment variables in .env:
+2. Set up environment variables in `.env`:
+   ```
    AZURE_AI_API_BASE=your_azure_endpoint
    AZURE_AI_API_KEY=your_api_key
-
+   ```
 
 ## Usage
 
 ### Start vLLM Server (Required First)
+```bash
 vllm serve "Qwen/Qwen3-4B-Thinking-2507" --port 8080 --max-logprobs 20 --max_model_len 8000 --gpu-memory-utilization 0.5
+```
 
-Make sure vLLM is running with --max-logprobs parameter before using the scripts.
+Make sure vLLM is running with `--max-logprobs` parameter before using the scripts.
 
 
 ### Option 1: Claude-guided Autonomous Editor (llm-edit.py)
+```bash
 python llm-edit.py
+```
 
 This runs the autonomous agent that:
 - Generates text from vLLM
@@ -48,7 +54,9 @@ This runs the autonomous agent that:
 
 
 ### Option 2: Interactive Streamlit UI (web.py)
+```bash
 streamlit run web.py
+```
 
 This provides a web interface for:
 - Manual token selection at branching points
@@ -58,17 +66,18 @@ This provides a web interface for:
 
 ## Configuration
 
-Edit these constants in llm-edit.py:
-- DEFAULT_TOP_N_UNCERTAIN: Number of high-entropy tokens to show (default: 20)
-- DEFAULT_TOP_PERCENT_CUTOFF: Max alternatives per token (default: 20)
-- DEFAULT_MIN_PERCENT_CUTOFF: Minimum probability threshold % (default: 1.0)
-- MAX_GENERATIONS: Maximum agent iterations (default: 10)
+Edit these constants in `llm-edit.py`:
+- `DEFAULT_TOP_N_UNCERTAIN`: Number of high-entropy tokens to show (default: 20)
+- `DEFAULT_TOP_PERCENT_CUTOFF`: Max alternatives per token (default: 20)
+- `DEFAULT_MIN_PERCENT_CUTOFF`: Minimum probability threshold % (default: 1.0)
+- `MAX_GENERATIONS`: Maximum agent iterations (default: 10)
 
-Edit INITIAL_PROMPT and REFERENCE_ANSWER to change the task.
-
-
+Edit `INITIAL_PROMPT` and `REFERENCE_ANSWER` to change the task.
 
 ## Example Prompt
+
+<details>
+<summary>Click to expand full example with token alternatives</summary>
 
 ```
 You are helping guide text generation by picking alternative tokens at high-entropy branching points.
@@ -235,3 +244,5 @@ If the generation looks good and matches the reference answer, call stop(is_pass
 If the generation does not pass the reference answer, use pick() to select alternatives until it passes.
 Otherwise, call pick("TXX-XX") to select the best alternative. After regeneration, you'll receive updated alternatives to continue.
 ```
+
+</details>
